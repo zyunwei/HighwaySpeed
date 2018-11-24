@@ -30,7 +30,11 @@ export default class playSceneScript extends cc.Component {
     passCarPrefab: cc.Prefab = null;
 
     _myCar: car = null;
-    _passCarPool = new cc.NodePool();
+    _passCarPool = [];
+
+    protected onLoad() {
+
+    }
 
     protected start() {
         this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
@@ -79,9 +83,9 @@ export default class playSceneScript extends cc.Component {
     protected createPassCar() {
         let newPassCar = null;
 
-        if (this._passCarPool.size() > 0) {
-            console.log("对象池:" + this._passCarPool.size());
-            newPassCar = this._passCarPool.get();
+        if (this._passCarPool.length > 0) {
+            console.log("对象池:" + this._passCarPool.length);
+            newPassCar = this._passCarPool.pop();
         } else {
             console.log("创建新对象");
             newPassCar = cc.instantiate(this.passCarPrefab);
@@ -112,7 +116,7 @@ export default class playSceneScript extends cc.Component {
 
         for (let passCar of removePassCarList) {
             passCar.removeFromParent();
-            this._passCarPool.put(passCar);
+            this._passCarPool.push(passCar);
         }
     }
 

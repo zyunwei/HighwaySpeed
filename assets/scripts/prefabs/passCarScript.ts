@@ -12,10 +12,6 @@ export default class passCarScript extends cc.Component {
     @property(Number)
     speed = 0;
 
-    start() {
-
-    }
-
     public init(carIndex, positionX, speed) {
         this.carIndex = carIndex;
         this.speed = speed;
