@@ -41,7 +41,6 @@
     "WebView",
     "Physics",
     "StudioComponent",
-    "Intersection",
     "Native NetWork"
   ],
   "fit-height": true,

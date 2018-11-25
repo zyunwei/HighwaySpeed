@@ -30,8 +30,14 @@ export default class playSceneScript extends cc.Component {
     @property({type: cc.AudioClip})
     CrashSound: cc.AudioClip = null
 
+    @property({type: cc.AudioClip})
+    AccSound: cc.AudioClip = null;
+
     @property(cc.Prefab)
     passCarPrefab: cc.Prefab = null;
+
+    _accSoundNumber: number = 0;
+    _brakeSoundNumber: number = 0;
 
     protected onLoad() {
         let collisionManager = cc.director.getCollisionManager();
@@ -110,7 +116,7 @@ export default class playSceneScript extends cc.Component {
         let carIndex = Math.floor(Math.random() * 9 + 1);
         let positionX = Math.floor(Math.random() * 450 - 200);
         let passCarScript = newPassCar.getComponent("passCarScript");
-        let speed = Math.floor(Math.random() * 250 + 1);
+        let speed = Math.floor(Math.random() * 180 + 100);
         passCarScript.init(carIndex, positionX, speed);
 
         newPassCar.parent = this.PassCars;
@@ -138,7 +144,8 @@ export default class playSceneScript extends cc.Component {
     protected onTouchStart(e: cc.Event.EventTouch) {
         let duration = Math.round(defines.TOP_SPEED_TIME * (1 - this._myCar.speed / defines.TOP_SPEED));
 
-        //cc.audioEngine.stop(this._brakeSoundNumber);
+        cc.audioEngine.stop(this._brakeSoundNumber);
+        this._accSoundNumber = cc.audioEngine.play(this.AccSound, false, 0.5);
 
         TWEEN.removeAll();
         new TWEEN.Tween(this._myCar)
@@ -163,12 +170,13 @@ export default class playSceneScript extends cc.Component {
     protected onTouchEnd(e: cc.Event.EventTouch) {
         let duration = Math.round(defines.BRAKE_TIME * (this._myCar.speed / defines.TOP_SPEED));
 
-        //this._brakeSoundNumber = cc.audioEngine.play(this.BrakeSound, false, 1);
+        cc.audioEngine.stop(this._accSoundNumber);
+        this._brakeSoundNumber = cc.audioEngine.play(this.BrakeSound, false, 1);
 
         TWEEN.removeAll();
         new TWEEN.Tween(this._myCar)
             .to({speed: 0}, duration)
-            .easing(TWEEN.Easing.Circular.InOut)
+            .easing(TWEEN.Easing.Circular.Out)
             .start();
     };
 
