@@ -116,7 +116,7 @@ export default class playSceneScript extends cc.Component {
         let carIndex = Math.floor(Math.random() * 9 + 1);
         let positionX = Math.floor(Math.random() * 450 - 200);
         let passCarScript = newPassCar.getComponent("passCarScript");
-        let speed = Math.floor(Math.random() * 180 + 100);
+        let speed = Math.floor(Math.random() * 100 + 50);
         passCarScript.init(carIndex, positionX, speed);
 
         newPassCar.parent = this.PassCars;
