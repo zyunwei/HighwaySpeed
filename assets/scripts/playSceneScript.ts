@@ -1,12 +1,16 @@
+import myCarScript from "./myCarScript";
+
 const {ccclass, property} = cc._decorator;
+import defines from './defines';
+import global from './global';
 import car from './car';
 import * as TWEEN from '../lib/Tween.js';
-import defines from './defines';
 
 @ccclass
 export default class playSceneScript extends cc.Component {
     @property(cc.Sprite)
-    CarSprite: cc.Sprite = null;
+    MyCarSprite: cc.Sprite = null;
+    _myCar: myCarScript = null;
 
     @property(cc.Label)
     LabelSpeed: cc.Label = null;
@@ -29,20 +33,22 @@ export default class playSceneScript extends cc.Component {
     @property(cc.Prefab)
     passCarPrefab: cc.Prefab = null;
 
-    _myCar: car = null;
-    _passCarPool = [];
-
     protected onLoad() {
-
+        let collisionManager = cc.director.getCollisionManager();
+        collisionManager.enabled = true;
+        //collisionManager.enabledDebugDraw = true;
     }
 
     protected start() {
+        global.TotalMileage = 0;
+
         this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(cc.Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
 
-        this._myCar = new car(100, -480);
+        this._myCar = this.MyCarSprite.node.getComponent("myCarScript");
+        this._myCar.init(100, -480);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -55,10 +61,14 @@ export default class playSceneScript extends cc.Component {
     }
 
     protected update(dt: number) {
-        this.CarSprite.node.setPosition(this._myCar.positionX, this._myCar.positionY);
+        this._myCar.updatePosition()
+
         this.LabelSpeed.string = Math.round(this._myCar.speed) + " km/h";
 
         let offsetPixel = Math.round(this._myCar.speed / 10);
+
+        global.TotalMileage += offsetPixel * 0.046875;
+
         if (Math.round(this._myCar.speed) > 0) {
             let roadPosition1 = this.Road1.getPosition();
             let roadPosition2 = this.Road2.getPosition();
@@ -77,15 +87,21 @@ export default class playSceneScript extends cc.Component {
             }
         }
 
+        if (this._myCar.isDestroy) {
+            cc.audioEngine.play(this.CrashSound, false, 1);
+            this._myCar.isDestroy = false;
+            cc.director.loadScene("scoreScene");
+        }
+
         this.updatePassCar(this._myCar.speed);
     }
 
     protected createPassCar() {
         let newPassCar = null;
 
-        if (this._passCarPool.length > 0) {
-            console.log("对象池:" + this._passCarPool.length);
-            newPassCar = this._passCarPool.pop();
+        if (global.PassCarPool.size() > 0) {
+            console.log("对象池:" + global.PassCarPool.size());
+            newPassCar = global.PassCarPool.get();
         } else {
             console.log("创建新对象");
             newPassCar = cc.instantiate(this.passCarPrefab);
@@ -109,14 +125,13 @@ export default class playSceneScript extends cc.Component {
             let offsetPixel = Math.round((passCarScript.speed - mySpeed) / 10);
             let newPositionY = passCar.position.y + offsetPixel;
             passCar.setPosition(passCar.position.x, newPositionY);
-            if (newPositionY > 800 || newPositionY < -800) {
+            if (passCarScript.isDestroy || newPositionY > 800 || newPositionY < -800) {
                 removePassCarList.push(passCar);
             }
         }
 
         for (let passCar of removePassCarList) {
-            passCar.removeFromParent();
-            this._passCarPool.push(passCar);
+            global.PassCarPool.put(passCar);
         }
     }
 

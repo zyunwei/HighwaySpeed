@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.5037671821410333,
-      "y": 0.5037671821410333,
+      "x": 0.4265625,
+      "y": 0.4265625,
       "z": 1
     },
     "_quat": {
@@ -84,17 +84,17 @@
         "__id__": 13
       },
       {
-        "__id__": 15
+        "__id__": 17
       }
     ],
     "_active": true,
     "_level": 1,
     "_components": [
       {
-        "__id__": 16
+        "__id__": 18
       },
       {
-        "__id__": 17
+        "__id__": 19
       }
     ],
     "_prefab": null,
@@ -577,7 +577,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "carSprite",
+    "_name": "myCar",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -588,6 +588,12 @@
     "_components": [
       {
         "__id__": 14
+      },
+      {
+        "__id__": 15
+      },
+      {
+        "__id__": 16
       }
     ],
     "_prefab": null,
@@ -633,7 +639,7 @@
     "_skewX": 0,
     "_skewY": 0,
     "_zIndex": 0,
-    "groupIndex": 0,
+    "groupIndex": 2,
     "_id": "e8GWtfokZOtK+0fJ/Ww/E2"
   },
   {
@@ -663,6 +669,41 @@
     "_state": 0,
     "_atlas": null,
     "_id": "fe4EXrj/tMko+ezqbbRaF1"
+  },
+  {
+    "__type__": "cc.BoxCollider",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 13
+    },
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": -1,
+      "y": 2
+    },
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 44,
+      "height": 45
+    },
+    "_id": "a8ccG9ep9PDIrllqbiz43K"
+  },
+  {
+    "__type__": "44c75rJWKpNPqGp1A6M5Ugh",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 13
+    },
+    "_enabled": true,
+    "positionX": 0,
+    "positionY": 0,
+    "speed": 0,
+    "isDestroy": false,
+    "_id": "d9t+hGgyNAD47ydyWeAeQa"
   },
   {
     "__type__": "cc.Node",
@@ -746,7 +787,7 @@
       "__id__": 2
     },
     "_enabled": true,
-    "CarSprite": {
+    "MyCarSprite": {
       "__id__": 14
     },
     "LabelSpeed": {
@@ -759,13 +800,13 @@
       "__id__": 9
     },
     "PassCars": {
-      "__id__": 15
+      "__id__": 17
     },
     "BrakeSound": {
       "__uuid__": "e5c1a97e-93e3-4dcb-bc2a-d2f0653feff4"
     },
     "CrashSound": {
-      "__uuid__": "22744c18-c0d3-446f-9c68-9b9341961c73"
+      "__uuid__": "5d6b9bbd-1cfe-49a2-9d6b-38adb05b08b9"
     },
     "passCarPrefab": {
       "__uuid__": "dec234f7-ae4b-47f0-8dc8-45fb5e6b1b29"
