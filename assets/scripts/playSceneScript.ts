@@ -174,7 +174,7 @@ export default class playSceneScript extends cc.Component {
             newPassCar = cc.instantiate(this.passCarPrefab);
         }
 
-        let carIndex = Math.floor(Math.random() * 12 + 1);
+        let carIndex = Math.floor(Math.random() * 11 + 2);
         let positionX = Math.floor(Math.random() * 450 - 200);
         let passCarScript = newPassCar.getComponent("passCarScript");
         let speed = Math.floor(Math.random() * 40 + 80);
@@ -205,8 +205,11 @@ export default class playSceneScript extends cc.Component {
     }
 
     protected onTouchStart(e: cc.Event.EventTouch) {
+        if(this._isGameOver) return;
+
         let duration = Math.round(defines.TOP_SPEED_TIME * (1 - this._myCar.speed / defines.TOP_SPEED));
 
+        cc.audioEngine.stop(this._accSoundNumber);
         cc.audioEngine.stop(this._brakeSoundNumber);
         this._accSoundNumber = cc.audioEngine.playEffect(this.AccSound, false);
 
@@ -218,6 +221,8 @@ export default class playSceneScript extends cc.Component {
     };
 
     protected onTouchMove(e: cc.Event.EventTouch) {
+        if(this._isGameOver) return;
+
         let diffX = e.touch.getLocationX() - e.touch.getStartLocation().x;
         let wheelRotation = diffX / 5;
         if (wheelRotation < -15) wheelRotation = -15;

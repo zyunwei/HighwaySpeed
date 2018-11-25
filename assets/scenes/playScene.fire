@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.368567304322775,
-      "y": 0.368567304322775,
+      "x": 0.37421875,
+      "y": 0.37421875,
       "z": 1
     },
     "_quat": {
@@ -491,8 +491,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 50,
-      "height": 50
+      "width": 132,
+      "height": 267
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -507,8 +507,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 2,
-      "y": 2,
+      "x": 0.5,
+      "y": 0.5,
       "z": 1
     },
     "_rotationX": 0,
@@ -537,7 +537,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "63bbe8d8-e3e0-4ec5-a0e2-9f02f5806cf7"
+      "__uuid__": "dea89b3c-7fbf-4dd4-94e4-786c230ebd73"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -570,8 +570,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 50,
-      "height": 50
+      "width": 132,
+      "height": 267
     },
     "_id": "a8ccG9ep9PDIrllqbiz43K"
   },
@@ -865,7 +865,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 120.04,
+      "width": 200,
       "height": 40
     },
     "_anchorPoint": {
@@ -875,7 +875,7 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 258,
+      "x": 250,
       "y": 1,
       "z": 0
     },
@@ -911,18 +911,18 @@
     "_srcBlendFactor": 1,
     "_dstBlendFactor": 771,
     "_useOriginalSize": false,
-    "_string": "0 km/h",
-    "_N$string": "0 km/h",
+    "_string": "000 km/h",
+    "_N$string": "000 km/h",
     "_fontSize": 40,
     "_lineHeight": 40,
-    "_enableWrapText": true,
+    "_enableWrapText": false,
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$horizontalAlign": 1,
+    "_N$horizontalAlign": 2,
     "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
+    "_N$fontFamily": "Microsoft YaHei",
+    "_N$overflow": 2,
     "_id": "5bIdn4hgNEBZ7wqnMHNQ7S"
   },
   {
@@ -935,9 +935,9 @@
     "_enabled": true,
     "alignMode": 1,
     "_target": null,
-    "_alignFlags": 20,
+    "_alignFlags": 36,
     "_left": 18.980000000000018,
-    "_right": 0,
+    "_right": 10,
     "_top": 0,
     "_bottom": 6,
     "_verticalCenter": 0,
