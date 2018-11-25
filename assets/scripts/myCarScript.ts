@@ -26,7 +26,6 @@ export default class myCarScript extends cc.Component {
     }
 
     onCollisionEnter(other, self) {
-        console.log("my car collision!")
         this.isDestroy = true;
         this.node.group = "default";
     }

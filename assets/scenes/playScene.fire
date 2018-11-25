@@ -41,8 +41,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.42656249999999973,
-      "y": 0.42656249999999973,
+      "x": 0.368567304322775,
+      "y": 0.368567304322775,
       "z": 1
     },
     "_quat": {
@@ -491,8 +491,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44,
-      "height": 51
+      "width": 50,
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -537,7 +537,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "a1977b6c-d532-404a-b6b0-c6a490d99e17"
+      "__uuid__": "63bbe8d8-e3e0-4ec5-a0e2-9f02f5806cf7"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -565,13 +565,13 @@
     "tag": 0,
     "_offset": {
       "__type__": "cc.Vec2",
-      "x": -1,
-      "y": 2
+      "x": 0,
+      "y": 0
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 44,
-      "height": 45
+      "width": 50,
+      "height": 50
     },
     "_id": "a8ccG9ep9PDIrllqbiz43K"
   },
@@ -1064,6 +1064,9 @@
     },
     "steeringWheelSprite": {
       "__id__": 17
+    },
+    "blastAnimationPrefab": {
+      "__uuid__": "898f5912-9f35-4283-8055-8c7ab925fd59"
     },
     "_id": "9aVywJystLGq+CLcTxoeE8"
   }

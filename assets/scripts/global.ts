@@ -1,5 +1,6 @@
 class global {
     static readonly PassCarPool: cc.NodePool = new cc.NodePool();
+    static readonly BlastPool: cc.NodePool = new cc.NodePool();
     static TotalMileage: number = 0;
 }
 

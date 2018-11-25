@@ -19,7 +19,7 @@ export default class passCarScript extends cc.Component {
         this.isDestroy = false;
         this.carIndex = carIndex;
         this.speed = speed;
-        this.node.setPosition(positionX, 700);
+        this.node.setPosition(positionX, 800);
 
         let self = this;
         let imgPath = 'cars/' + carIndex;
@@ -32,7 +32,6 @@ export default class passCarScript extends cc.Component {
     }
 
     onCollisionEnter(other, self) {
-        console.log("pass car collision!")
         this.isDestroy = true;
     }
 }

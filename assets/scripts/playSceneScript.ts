@@ -42,15 +42,25 @@ export default class playSceneScript extends cc.Component {
     @property(cc.Sprite)
     steeringWheelSprite: cc.Sprite = null;
 
+    @property(cc.Prefab)
+    blastAnimationPrefab: cc.Prefab = null;
+
     _accSoundNumber: number = 0;
     _brakeSoundNumber: number = 0;
     _musicNumber: number = 0;
     _steeringValue: number = 0;
+    _isGameOver: boolean = false;
+    _isFinish: boolean = false;
 
     protected onLoad() {
         let collisionManager = cc.director.getCollisionManager();
         collisionManager.enabled = true;
         //collisionManager.enabledDebugDraw = true;
+
+        global.BlastPool.clear();
+        global.PassCarPool.clear();
+
+        this._isGameOver = false;
     }
 
     protected start() {
@@ -78,12 +88,19 @@ export default class playSceneScript extends cc.Component {
         if (this._musicNumber == 0)
             this._musicNumber = cc.audioEngine.playMusic(this.BackgroundMusic, true);
 
-        let checkPositionX = this._myCar.positionX + Math.sqrt(this._myCar.speed) * 1.5 * Math.sin(this._steeringValue * Math.PI / 180);
-        if (checkPositionX < -300) {
-            checkPositionX = -300;
+        if (this._isFinish) return;
+        if (this._isGameOver) {
+            this._isFinish = true;
+            cc.director.loadScene("scoreScene");
+            return;
         }
-        if (checkPositionX > 300) {
-            checkPositionX = 300;
+
+        let checkPositionX = this._myCar.positionX + Math.sqrt(this._myCar.speed) * 1.65 * Math.sin(this._steeringValue * Math.PI / 180);
+        if (checkPositionX < -260) {
+            checkPositionX = -260;
+        }
+        if (checkPositionX > 260) {
+            checkPositionX = 260;
         }
         this._myCar.positionX = checkPositionX;
         this._myCar.updatePosition()
@@ -114,16 +131,38 @@ export default class playSceneScript extends cc.Component {
 
         // 自己撞车
         if (this._myCar.isDestroy) {
+            this._isGameOver = true;
             cc.audioEngine.stop(this._brakeSoundNumber);
             cc.audioEngine.stop(this._accSoundNumber);
             cc.audioEngine.stop(this._musicNumber);
-
             cc.audioEngine.playEffect(this.CrashSound, false);
-            this._myCar.isDestroy = false;
-            cc.director.loadScene("scoreScene");
+            this.playBlast(this._myCar.positionX, this._myCar.positionY);
         }
 
         this.updatePassCar(this._myCar.speed);
+    }
+
+    protected playBlast(x: number, y: number) {
+        let currentBlast = null;
+        if (global.BlastPool.size() > 0) {
+            currentBlast = global.BlastPool.get();
+        } else {
+            currentBlast = cc.instantiate(this.blastAnimationPrefab);
+        }
+
+        try {
+            let aniCtrl = currentBlast.getComponent("cc.Animation");
+            if (aniCtrl) {
+                aniCtrl.play();
+                currentBlast.setPosition(x, y);
+                currentBlast.parent = this.node;
+            }
+            setTimeout(function () {
+                global.BlastPool.put(currentBlast);
+            }, 1000)
+        } catch (e) {
+
+        }
     }
 
     protected createPassCar() {
@@ -135,10 +174,10 @@ export default class playSceneScript extends cc.Component {
             newPassCar = cc.instantiate(this.passCarPrefab);
         }
 
-        let carIndex = Math.floor(Math.random() * 9 + 1);
+        let carIndex = Math.floor(Math.random() * 12 + 1);
         let positionX = Math.floor(Math.random() * 450 - 200);
         let passCarScript = newPassCar.getComponent("passCarScript");
-        let speed = Math.floor(Math.random() * 100 + 50);
+        let speed = Math.floor(Math.random() * 40 + 80);
         passCarScript.init(carIndex, positionX, speed);
 
         newPassCar.parent = this.PassCars;
@@ -153,13 +192,15 @@ export default class playSceneScript extends cc.Component {
             let offsetPixel = Math.round((passCarScript.speed - mySpeed) / 10);
             let newPositionY = passCar.position.y + offsetPixel;
             passCar.setPosition(passCar.position.x, newPositionY);
-            if (passCarScript.isDestroy || newPositionY > 800 || newPositionY < -800) {
+            if (passCarScript.isDestroy || newPositionY > 1200 || newPositionY < -1200) {
                 removePassCarList.push(passCar);
             }
         }
 
         for (let passCar of removePassCarList) {
             global.PassCarPool.put(passCar);
+            let passCarPosition = passCar.getPosition();
+            this.playBlast(passCarPosition.x, passCarPosition.y);
         }
     }
 
