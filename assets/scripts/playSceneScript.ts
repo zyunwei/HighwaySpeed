@@ -33,11 +33,19 @@ export default class playSceneScript extends cc.Component {
     @property({type: cc.AudioClip})
     AccSound: cc.AudioClip = null;
 
+    @property({type: cc.AudioClip})
+    BackgroundMusic: cc.AudioClip = null;
+
     @property(cc.Prefab)
     passCarPrefab: cc.Prefab = null;
 
+    @property(cc.Sprite)
+    steeringWheelSprite: cc.Sprite = null;
+
     _accSoundNumber: number = 0;
     _brakeSoundNumber: number = 0;
+    _musicNumber: number = 0;
+    _steeringValue: number = 0;
 
     protected onLoad() {
         let collisionManager = cc.director.getCollisionManager();
@@ -54,7 +62,7 @@ export default class playSceneScript extends cc.Component {
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
 
         this._myCar = this.MyCarSprite.node.getComponent("myCarScript");
-        this._myCar.init(100, -480);
+        this._myCar.init(100, -350);
 
         function animate() {
             requestAnimationFrame(animate);
@@ -67,11 +75,22 @@ export default class playSceneScript extends cc.Component {
     }
 
     protected update(dt: number) {
+        if (this._musicNumber == 0)
+            this._musicNumber = cc.audioEngine.playMusic(this.BackgroundMusic, true);
+
+        let checkPositionX = this._myCar.positionX + Math.sqrt(this._myCar.speed) * 1.5 * Math.sin(this._steeringValue * Math.PI / 180);
+        if (checkPositionX < -300) {
+            checkPositionX = -300;
+        }
+        if (checkPositionX > 300) {
+            checkPositionX = 300;
+        }
+        this._myCar.positionX = checkPositionX;
         this._myCar.updatePosition()
 
         this.LabelSpeed.string = Math.round(this._myCar.speed) + " km/h";
 
-        let offsetPixel = Math.round(this._myCar.speed / 10);
+        let offsetPixel = Math.round(this._myCar.speed / 10) * Math.abs(Math.cos(this._steeringValue * Math.PI / 180));
 
         global.TotalMileage += offsetPixel * 0.046875;
 
@@ -93,8 +112,13 @@ export default class playSceneScript extends cc.Component {
             }
         }
 
+        // 自己撞车
         if (this._myCar.isDestroy) {
-            cc.audioEngine.play(this.CrashSound, false, 1);
+            cc.audioEngine.stop(this._brakeSoundNumber);
+            cc.audioEngine.stop(this._accSoundNumber);
+            cc.audioEngine.stop(this._musicNumber);
+
+            cc.audioEngine.playEffect(this.CrashSound, false);
             this._myCar.isDestroy = false;
             cc.director.loadScene("scoreScene");
         }
@@ -106,10 +130,8 @@ export default class playSceneScript extends cc.Component {
         let newPassCar = null;
 
         if (global.PassCarPool.size() > 0) {
-            console.log("对象池:" + global.PassCarPool.size());
             newPassCar = global.PassCarPool.get();
         } else {
-            console.log("创建新对象");
             newPassCar = cc.instantiate(this.passCarPrefab);
         }
 
@@ -145,7 +167,7 @@ export default class playSceneScript extends cc.Component {
         let duration = Math.round(defines.TOP_SPEED_TIME * (1 - this._myCar.speed / defines.TOP_SPEED));
 
         cc.audioEngine.stop(this._brakeSoundNumber);
-        this._accSoundNumber = cc.audioEngine.play(this.AccSound, false, 0.5);
+        this._accSoundNumber = cc.audioEngine.playEffect(this.AccSound, false);
 
         TWEEN.removeAll();
         new TWEEN.Tween(this._myCar)
@@ -155,23 +177,25 @@ export default class playSceneScript extends cc.Component {
     };
 
     protected onTouchMove(e: cc.Event.EventTouch) {
-        let delta = e.touch.getDelta();
-        let checkPositionX = this._myCar.positionX + delta.x;
-        if (checkPositionX < -300) {
-            checkPositionX = -300;
-        }
-        if (checkPositionX > 300) {
-            checkPositionX = 300;
-        }
+        let diffX = e.touch.getLocationX() - e.touch.getStartLocation().x;
+        let wheelRotation = diffX / 5;
+        if (wheelRotation < -15) wheelRotation = -15;
+        if (wheelRotation > 15) wheelRotation = 15;
 
-        this._myCar.positionX = checkPositionX;
+        this.steeringWheelSprite.node.setRotation(wheelRotation);
+        this.MyCarSprite.node.setRotation(wheelRotation / 10);
+
+        this._steeringValue = wheelRotation;
     };
 
     protected onTouchEnd(e: cc.Event.EventTouch) {
         let duration = Math.round(defines.BRAKE_TIME * (this._myCar.speed / defines.TOP_SPEED));
 
         cc.audioEngine.stop(this._accSoundNumber);
-        this._brakeSoundNumber = cc.audioEngine.play(this.BrakeSound, false, 1);
+        this._steeringValue = 0;
+        this.steeringWheelSprite.node.setRotation(0);
+        this.MyCarSprite.node.setRotation(0);
+        this._brakeSoundNumber = cc.audioEngine.playEffect(this.BrakeSound, false);
 
         TWEEN.removeAll();
         new TWEEN.Tween(this._myCar)
